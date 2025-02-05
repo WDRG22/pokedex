@@ -3,11 +3,34 @@ package main
 import (
 	"fmt"
 	"strings"
+	"bufio"
+	"os"
+	commands "github.com/wdrg22/pokedex/commands" 
 )
 
+
 func main() {
-	fmt.Println("Hello, World!")
-	fmt.Println(cleanInput("?tesT!, Data .wOrd, bum-"))
+	scanner := bufio.NewScanner(os.Stdin)
+
+	for {
+		fmt.Print("Pokedex > ")
+		scanner.Scan()
+		input := scanner.Text()
+		cleanedInput := cleanInput(input)
+
+		if len(cleanedInput) == 0 {
+			continue
+		}
+
+		if command, ok := commands.CommandRegistry[cleanedInput[0]]; ok {
+			err := command.Callback()
+			if err != nil {
+				fmt.Println(err)
+			}
+		} else {
+			fmt.Println("Unknown command")
+		}
+	}		
 }
 
 func cleanInput(text string) []string {

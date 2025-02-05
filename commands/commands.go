@@ -5,13 +5,13 @@ import (
 	"os"
 )
 
-type cliCommand struct {
-        name            string
-        description     string
-        callback        func() error
+type CliCommand struct {
+        Name            string
+        Description     string
+        Callback        func() error
 }
 
-var commandRegistry map[string]cliCommand 
+var CommandRegistry map[string]CliCommand 
 
 func commandExit() error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
@@ -22,24 +22,24 @@ func commandExit() error {
 func commandHelp() error {
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Useage:")
-	for _, command := range commandRegistry {
-		fmt.Printf("%s: %s\n", command.name, command.description)
+	for _, command := range CommandRegistry {
+		fmt.Printf("%s: %s\n", command.Name, command.Description)
 	}
 	return nil
 }
 
 
-func int() {
-	commandRegistry = map[string]cliCommand{
+func init() {
+	CommandRegistry = map[string]CliCommand{
 		"exit": {
-			name: "exit",
-			description: "Exits the Pokedex",
-			callback: commandExit,
+			Name: "exit",
+			Description: "Exits the Pokedex",
+			Callback: commandExit,
 		},
 		"help": {
-			name: "help",
-			description: "Displays a help message",
-			callback: commandHelp,
+			Name: "help",
+			Description: "Displays a help message",
+			Callback: commandHelp,
 		},
 	}
 }

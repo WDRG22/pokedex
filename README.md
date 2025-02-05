@@ -1,4 +1,0 @@
-# pokedex
-# pokedex
-# pokedex
-# pokedex
