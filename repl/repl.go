@@ -1,3 +1,5 @@
+// Concerns user input and the Read-Eval-Print Loop
+
 package repl
 
 import (
@@ -8,7 +10,7 @@ import (
 	commands "github.com/wdrg22/pokedex/commands"
 )
 
-func StartREPL() {
+func StartREPL(cfg *commands.Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -21,13 +23,17 @@ func StartREPL() {
 			continue
 		}
 
-		if cmd, ok := commands.CommandRegistry[cleanedInput[0]]; ok {
-			err := cmd.Callback()
+		commandName := cleanedInput[0]
+
+		if cmd, exists := commands.CommandRegistry[commandName]; exists {
+			err := cmd.Callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
+			continue
 		} else {
 			fmt.Println("Unknown command")
+			continue
 		}
 	}		
 }

@@ -1,28 +1,40 @@
+// Concerns api interactions
+
 package pokeapi
 
-type Config struct {
-	NextURL string
-	PrevURL string
+import (
+	"net/http"
+	"encoding/json"
+	"fmt"
+)
+
+type LocationAreaResponse struct {
+	Count		int 		`json:"count"`
+	Next 		*string 	`json:"next"`
+	Previous 	*string 	`json:"previous"`
+	Results 	[]LocationArea 	`json:"results"`
 }
 
-type LocationArea {
-	Name: string
-	URL: string
+type LocationArea struct {
+	Name 	string `json:"name"`
+	URL 	string `json:"url"`
 }
 
-func GetLocationAreas(config *Config) []string {
-	res, err := http.Get(config.NextURL)
+
+func GetLocationAreas(url string) (LocationAreaResponse, error) {
+	res, err := http.Get(url)
 	if err != nil { 
-		log.Fatal(err)
-	}
+		return LocationAreaResponse{}, fmt.Errorf("error creating request: %w", err)
 
-	body, err := io.ReadAll(res.Body)
+	}
 	defer res.Body.Close()
 
-	if res.StatusCode > 299 {
-		log.Fatalf("Response failed with status code %d and\nbody: %s\n", res.StatusCode, body) 
+	var locationAreaResponse LocationAreaResponse
+	decoder := json.NewDecoder(res.Body)
+	if err := decoder.Decode(&locationAreaResponse); err != nil {
+		return LocationAreaResponse{}, fmt.Errorf("error decoding response body: %w", err)
 	}
 
-	return []string{"test","getlocationareas","return"}
+	return locationAreaResponse, nil
 }
 	
