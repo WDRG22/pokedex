@@ -13,22 +13,6 @@ type CliCommand struct {
 
 var CommandRegistry map[string]CliCommand 
 
-func commandExit() error {
-	fmt.Println("Closing the Pokedex... Goodbye!")
-	os.Exit(0)
-	return nil
-}
-
-func commandHelp() error {
-	fmt.Println("Welcome to the Pokedex!")
-	fmt.Println("Useage:")
-	for _, command := range CommandRegistry {
-		fmt.Printf("%s: %s\n", command.Name, command.Description)
-	}
-	return nil
-}
-
-
 func init() {
 	CommandRegistry = map[string]CliCommand{
 		"exit": {
@@ -42,4 +26,21 @@ func init() {
 			Callback: commandHelp,
 		},
 	}
+}
+
+func commandExit() error {
+	fmt.Println("Closing the Pokedex... Goodbye!")
+	os.Exit(0)
+	return nil
+}
+
+func commandHelp() error {
+	fmt.Println("Welcome to the Pokedex!")
+	fmt.Println("Useage:")
+	fmt.Println()
+	for _, command := range CommandRegistry {
+		fmt.Printf("%s: %s\n", command.Name, command.Description)
+	}
+	fmt.Println()
+	return nil
 }

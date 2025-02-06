@@ -2,6 +2,7 @@ package main
 
 import (
 	"testing"
+	repl "github.com/wdrg22/pokedex/repl"
 )
 
 func TestCleanInput(t *testing.T) {
@@ -15,16 +16,16 @@ func TestCleanInput(t *testing.T) {
 		},
 		{
 			input: " TEST! CaSe? ",
-			expected: []string{"test", "case"},
+			expected: []string{"test!", "case?"},
 		},
 		{
 			input: "here'S a, longER! TES,,./T case!",
-			expected: []string{"here's","a","longer","tes,,./t", "case"},
+			expected: []string{"here's","a,","longer!","tes,,./t", "case!"},
 		},
 	}
 
 	for _, c := range cases {
-		actual := cleanInput(c.input)
+		actual := repl.CleanInput(c.input)
 		if len(actual) != len(c.expected) { 
 			t.Errorf("Actual length != expected length")
 			continue
