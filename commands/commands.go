@@ -1,31 +1,13 @@
-// Concerns user commands handling and state management
+// Concerns handling user commands 
 
 package commands
 
 import (
 	"fmt"
 	"os"
-	pokeapi "github.com/wdrg22/pokedex/internal"
+	"github.com/wdrg22/pokedex/internal/pokeapi"
 )
 
-
-type Config struct {
-	NextURL string
-	PrevURL string
-}
-
-type CliCommand struct {
-        Name            string
-        Description     string
-        Callback        func(*Config) error
-}
-
-var CommandRegistry map[string]CliCommand 
-
-func InitConfig(nextURL string, prevURL string) *Config {
-	return &Config{nextURL, prevURL}
-
-}
 
 func init() {
 	CommandRegistry = map[string]CliCommand{
