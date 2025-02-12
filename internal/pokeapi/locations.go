@@ -18,6 +18,17 @@ type LocationAreaResponse struct {
 }
 
 func (c *Client) GetLocationAreas(url string) (LocationAreaResponse, error) {
+
+	// Check for cached response first
+	if cacheEntry, exists := c.cache.Entries[url]; exists {
+		var cachedResponse LocationAreaResponse
+		if err := json.Unmarshal(cacheEntry.Val, &cachedResponse); err != nil {
+			return LocationAreaResponse{}, fmt.Errorf("Error unmarshalling cached response: %w", err)
+		}
+		return cachedResponse, nil
+	}
+
+	// If not in cache make request to api
 	res, err := c.httpClient.Get(url)
 	if err != nil { 
 		return LocationAreaResponse{}, fmt.Errorf("error creating request: %w", err)
@@ -30,6 +41,13 @@ func (c *Client) GetLocationAreas(url string) (LocationAreaResponse, error) {
 	if err := decoder.Decode(&locationAreaResponse); err != nil {
 		return LocationAreaResponse{}, fmt.Errorf("error decoding response body: %w", err)
 	}
+
+	// Add response to cache
+	val, err := json.Marshal(locationAreaResponse)
+	if err != nil{
+		return locationAreaResponse, fmt.Errorf("error marshalling response into cache: %w", err)
+	}
+	c.cache.Add(url, val) 
 
 	return locationAreaResponse, nil
 }
