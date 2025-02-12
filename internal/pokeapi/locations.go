@@ -1,4 +1,4 @@
-// Concerns location data request and response methods
+// Concerns pokedex api location data requests and responses 
 
 package pokeapi
 
@@ -7,6 +7,15 @@ import (
 	"fmt"
 )
 
+type LocationAreaResponse struct {
+        Count           int             `json:"count"`
+        Next            *string         `json:"next"`
+        Previous        *string         `json:"previous"`
+        Results         []struct {
+                Name    string `json:"name"`
+                URL     string `json:"url"`
+        } `json:"results"`
+}
 
 func (c *Client) GetLocationAreas(url string) (LocationAreaResponse, error) {
 	res, err := c.httpClient.Get(url)
