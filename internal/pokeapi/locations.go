@@ -20,9 +20,9 @@ type LocationAreaResponse struct {
 func (c *Client) GetLocationAreas(url string) (LocationAreaResponse, error) {
 
 	// Check for cached response first
-	if cacheEntry, exists := c.cache.Entries[url]; exists {
+	if cachedVal, exists := c.cache.Get(url); exists {
 		var cachedResponse LocationAreaResponse
-		if err := json.Unmarshal(cacheEntry.Val, &cachedResponse); err != nil {
+		if err := json.Unmarshal(cachedVal, &cachedResponse); err != nil {
 			return LocationAreaResponse{}, fmt.Errorf("Error unmarshalling cached response: %w", err)
 		}
 		return cachedResponse, nil
