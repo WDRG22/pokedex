@@ -1,3 +1,5 @@
+// Concerns api caching
+
 package pokecache
 
 import (

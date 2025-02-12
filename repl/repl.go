@@ -7,10 +7,9 @@ import (
 	"strings"
 	"bufio"
 	"os"
-	commands "github.com/wdrg22/pokedex/commands"
 )
 
-func StartREPL(cfg *commands.Config) {
+func StartREPL(cfg *Config) {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -25,8 +24,8 @@ func StartREPL(cfg *commands.Config) {
 
 		commandName := cleanedInput[0]
 
-		if cmd, exists := commands.CommandRegistry[commandName]; exists {
-			err := cmd.Callback(cfg)
+		if cmd, exists := getCommands()[commandName]; exists {
+			err := cmd.callback(cfg)
 			if err != nil {
 				fmt.Println(err)
 			}
