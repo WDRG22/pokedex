@@ -8,7 +8,7 @@ import (
 
 
 func main() {
-	client := pokeapi.NewClient(5 * time.Second)
+	client := pokeapi.NewClient(5 * time.Second, 5 * time.Minute)
 	config := repl.InitConfig(client, "https://pokeapi.co/api/v2/location-area/", "")
 	repl.StartREPL(config)
 }

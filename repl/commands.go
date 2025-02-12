@@ -12,7 +12,7 @@ import (
 type cliCommand struct {
         name            string
         description     string
-        callback        func(*Config) error
+        callback        func(*Config, []string) error
 }
 
 func getCommands() map[string]cliCommand {
@@ -29,24 +29,29 @@ func getCommands() map[string]cliCommand {
 		},
 		"map": {
 			name: "map",
-			description: "Enumerates the next map location areas",
+			description: "Enumerates the next map locations",
 			callback: Map,
 		},
 		"mapb": {
 			name: "mapb",
-			description: "Enumerates the previous map location areas",
+			description: "Enumerates the previous map locations",
 			callback: MapB,
+		},
+		"explore": {
+			name: "explore",
+			description: "Displays a list of pokemon in a location",
+			callback: Explore,
 		},
 	}
 }
 
-func Exit(cfg *Config) error {
+func Exit(cfg *Config, args []string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
 }
 
-func Help(cfg *Config) error {
+func Help(cfg *Config, args []string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Useage:")
@@ -68,60 +73,78 @@ func Help(cfg *Config) error {
 	return nil
 }
 
-// Get next location areas. Update cfg w/ new URLs 
-func Map(cfg *Config) error {
-	if cfg.NextURL == ""{
+// Get next locations. Update cfg w/ new URLs 
+func Map(cfg *Config, args []string) error {
+	if cfg.NextURL == nil{
 		fmt.Println("you're on the last page")
 		return nil	
 	}
 
-	// Get location areas
-	locationAreaResponse, err := cfg.PokeClient.GetLocationAreas(cfg.NextURL)
+	// Get locations 
+	locationsResp, err := cfg.PokeClient.GetLocations(cfg.NextURL)
 	if err != nil {
 		return err
 	}
 
 	// Update config
 	cfg.PrevURL = cfg.NextURL
-	if locationAreaResponse.Next == nil {
-		cfg.NextURL = ""
+	if locationsResp.Next == nil {
+		cfg.NextURL = nil 
 	} else {
-		cfg.NextURL = *locationAreaResponse.Next
+		cfg.NextURL = locationsResp.Next
 	}
 	
-	// Print location areas
-	locationAreas := locationAreaResponse.Results
-	for _, locationArea := range locationAreas {
-		fmt.Println(locationArea.Name)
+	// Print locations 
+	locations := locationsResp.Results
+	for _, location := range locations {
+		fmt.Println(location.Name)
 	}
 	return nil
 }
 
-// Get previous location areas. Update cfg w/ new URLs 
-func MapB(cfg *Config) error {
-	if cfg.PrevURL == "" {
+// Get previous locations. Update cfg w/ new URLs 
+func MapB(cfg *Config, args []string) error {
+	if cfg.PrevURL == nil {
 		fmt.Println("you're on the first page")
 		return nil
 	}
 
-	// Get location areas
-	locationAreaResponse, err := cfg.PokeClient.GetLocationAreas(cfg.PrevURL)
+	// Get locations 
+	locationsResp, err := cfg.PokeClient.GetLocations(cfg.PrevURL)
 	if err != nil {
 		return err
 	}
 
 	// Update config
 	cfg.NextURL = cfg.PrevURL
-	if locationAreaResponse.Previous == nil {
-		cfg.PrevURL = ""
+	if locationsResp.Previous == nil {
+		cfg.PrevURL = nil
 	} else {
-		cfg.PrevURL = *locationAreaResponse.Previous
+		cfg.PrevURL = locationsResp.Previous
 	}
 
-	// Print location areas
-	locationAreas := locationAreaResponse.Results
-	for _, locationArea := range locationAreas {
-		fmt.Println(locationArea.Name)
+	// Print locations 
+	locations := locationsResp.Results
+	for _, location := range locations{
+		fmt.Println(location.Name)
+	}
+	return nil
+}
+
+// Get pokemon in this location 
+func Explore(cfg *Config, args []string) error {
+	if len(args) < 1 {
+		return fmt.Errorf("please provide a location")
+	}
+
+	// Api call
+	locationDetails, err:= cfg.PokeClient.GetLocationDetails(args[0])
+	if err != nil {
+		return fmt.Errorf("there was an error retrieving this location's pokemon: %w", err)
+	}
+
+	for _, encounter := range locationDetails.Encounters{
+		fmt.Println(encounter.Pokemon.Name)
 	}
 	return nil
 }

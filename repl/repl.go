@@ -23,9 +23,10 @@ func StartREPL(cfg *Config) {
 		}
 
 		commandName := cleanedInput[0]
+		args := cleanedInput[1:]
 
 		if cmd, exists := getCommands()[commandName]; exists {
-			err := cmd.callback(cfg)
+			err := cmd.callback(cfg, args)
 			if err != nil {
 				fmt.Println(err)
 			}
