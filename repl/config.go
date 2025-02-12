@@ -3,14 +3,14 @@ package repl
 import "github.com/wdrg22/pokedex/internal/pokeapi"
 
 type Config struct {
-        Client  *pokeapi.Client
+        PokeClient  *pokeapi.Client
         NextURL string
         PrevURL string
 }
 
 func InitConfig(httpClient *pokeapi.Client, next string, prev string) *Config {
 	return &Config{
-		Client: httpClient,
+		PokeClient: httpClient,
 		NextURL: next,
 		PrevURL: prev,
 	}

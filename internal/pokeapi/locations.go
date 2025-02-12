@@ -3,14 +3,13 @@
 package pokeapi
 
 import (
-	"net/http"
 	"encoding/json"
 	"fmt"
 )
 
 
-func GetLocationAreas(url string) (LocationAreaResponse, error) {
-	res, err := http.Get(url)
+func (c *Client) GetLocationAreas(url string) (LocationAreaResponse, error) {
+	res, err := c.httpClient.Get(url)
 	if err != nil { 
 		return LocationAreaResponse{}, fmt.Errorf("error creating request: %w", err)
 

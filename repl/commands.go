@@ -6,7 +6,6 @@ import (
 	"fmt"
 	"os"
 	"sort"
-	"github.com/wdrg22/pokedex/internal/pokeapi"
 )
 
 
@@ -77,7 +76,7 @@ func Map(cfg *Config) error {
 	}
 
 	// Get location areas
-	locationAreaResponse, err := pokeapi.GetLocationAreas(cfg.NextURL)
+	locationAreaResponse, err := cfg.PokeClient.GetLocationAreas(cfg.NextURL)
 	if err != nil {
 		return err
 	}
@@ -106,7 +105,7 @@ func MapB(cfg *Config) error {
 	}
 
 	// Get location areas
-	locationAreaResponse, err := pokeapi.GetLocationAreas(cfg.PrevURL)
+	locationAreaResponse, err := cfg.PokeClient.GetLocationAreas(cfg.PrevURL)
 	if err != nil {
 		return err
 	}
