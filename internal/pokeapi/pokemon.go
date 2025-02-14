@@ -9,16 +9,53 @@ import (
 type PokemonResp struct {
 	Name	string 	`json:"name"`
 	BaseExp	int	`json:"base_experience"`	
+	Height	int 	`json:"height"`
+	Weight	int	`json:"weight"`
+	Stats []struct {
+		BaseStat int `json:"base_stat"`
+		Stat struct{
+			Name string `json:"name"`
+		} `json:"stat"`
+	} `json:"stats"`
+	Types []struct {
+		Type struct{
+			Name string `json:"name"`
+		} `json:"type"`
+	} `json:"types"`
 }
 
-// Convert API response to game Pokemon type
+
+// Convert Pokemon API response to game pokemon type
 func (p *PokemonResp) ToPokemon() pokedex.Pokemon {
+
+	// Convert Stats
+	stats := make([]pokedex.Stat, len(p.Stats))
+	for i, s := range p.Stats {
+		stats[i] = pokedex.Stat{
+			Name:     s.Stat.Name,
+			BaseStat: s.BaseStat,
+		}
+	}
+
+	// Convert Types
+	types := make([]pokedex.Type, len(p.Types))
+	for i, t := range p.Types {
+		types[i] = pokedex.Type{
+			Name: t.Type.Name,
+		}
+	}
+
 	return pokedex.Pokemon{
-		Name: 		p.Name,
-		BaseExp: 	p.BaseExp,
+		Name:    p.Name,
+		BaseExp: p.BaseExp,
+		Height:  p.Height,
+		Weight:  p.Weight,
+		Stats:   stats,
+		Types:   types,
 	}
 }
 
+// Get individual pokemon data from api
 func (c *Client) GetPokemon(name string) (pokedex.Pokemon, error) {
 	url := baseURL + "pokemon/" + name
 

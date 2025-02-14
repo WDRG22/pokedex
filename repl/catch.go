@@ -21,14 +21,9 @@ func Catch (cfg *Config, args []string) error {
 	}
 
 	// Determine if pokemon is caught
-	prob := calculateCatchProbability(pokemon.BaseExp)
-	rand := rand.Float64()
-	fmt.Println()
-	fmt.Println(prob)
-	fmt.Println(rand)
-	isCaught := rand < prob
-	fmt.Println(isCaught)
-	fmt.Println()
+	probCatch := calculateCatchProbability(pokemon.BaseExp)
+	random := rand.Float64()
+	isCaught := random < probCatch 
 	
 	if !isCaught {
 		fmt.Printf("%s escaped!\n", pokemon.Name)
