@@ -24,14 +24,11 @@ type LocationsResp struct {
 type LocationDetailsResp struct {
 	Name		string	`json:"name"`
 	Encounters 	[]struct {
-		Pokemon	Pokemon `json:"pokemon"`
+		Pokemon	struct {
+			Name	string `json:"name"`
+		} `json:"pokemon"`
 	} `json:"pokemon_encounters"`
 }
-
-type Pokemon struct {
-	Name	string	`json:"name"`
-	URL	string	`json:"url"`
-} 
 
 func (c *Client) GetLocations(pageURL *string) (LocationsResp, error) {
 	url := baseURL + "/location-area"
@@ -43,7 +40,7 @@ func (c *Client) GetLocations(pageURL *string) (LocationsResp, error) {
 	if cachedVal, exists := c.cache.Get(url); exists {
 		var cachedResponse LocationsResp
 		if err := json.Unmarshal(cachedVal, &cachedResponse); err != nil {
-			return LocationsResp{}, fmt.Errorf("Error unmarshalling cached response: %w", err)
+			return LocationsResp{}, fmt.Errorf("Error unmarshalling cached response: %w\n", err)
 		}
 		return cachedResponse, nil
 	}
@@ -51,7 +48,7 @@ func (c *Client) GetLocations(pageURL *string) (LocationsResp, error) {
 	// If not in cache make request to api
 	res, err := c.httpClient.Get(url)
 	if err != nil { 
-		return LocationsResp{}, fmt.Errorf("error creating request: %w", err)
+		return LocationsResp{}, fmt.Errorf("error creating request: %w\n", err)
 
 	}
 	defer res.Body.Close()
@@ -59,13 +56,13 @@ func (c *Client) GetLocations(pageURL *string) (LocationsResp, error) {
 	var locationsResp LocationsResp
 	decoder := json.NewDecoder(res.Body)
 	if err := decoder.Decode(&locationsResp); err != nil {
-		return LocationsResp{}, fmt.Errorf("error decoding response body: %w", err)
+		return LocationsResp{}, fmt.Errorf("error decoding response body: %w\n", err)
 	}
 
 	// Add response to cache
 	val, err := json.Marshal(locationsResp)
 	if err != nil{
-		return locationsResp, fmt.Errorf("error marshalling response into cache: %w", err)
+		return locationsResp, fmt.Errorf("error marshalling response into cache: %w\n", err)
 	}
 	c.cache.Add(url, val) 
 
@@ -79,7 +76,7 @@ func (c *Client) GetLocationDetails(location string) (LocationDetailsResp, error
 	if cachedVal, exists := c.cache.Get(url); exists {
 		var cachedResponse LocationDetailsResp
 		if err := json.Unmarshal(cachedVal, &cachedResponse); err != nil {
-			return LocationDetailsResp{}, fmt.Errorf("Error unmarshalling cached response: %w", err)
+			return LocationDetailsResp{}, fmt.Errorf("Error unmarshalling cached response: %w\n", err)
 		}
 		return cachedResponse, nil
 	}
@@ -87,7 +84,7 @@ func (c *Client) GetLocationDetails(location string) (LocationDetailsResp, error
 	// If not in cache make request to api
 	res, err := c.httpClient.Get(url)
 	if err != nil { 
-		return LocationDetailsResp{}, fmt.Errorf("error creating request: %w", err)
+		return LocationDetailsResp{}, fmt.Errorf("error creating request: %w\n", err)
 
 	}
 	defer res.Body.Close()
@@ -95,13 +92,13 @@ func (c *Client) GetLocationDetails(location string) (LocationDetailsResp, error
 	var locationDetails LocationDetailsResp
 	decoder := json.NewDecoder(res.Body)
 	if err := decoder.Decode(&locationDetails); err != nil {
-		return LocationDetailsResp{}, fmt.Errorf("error decoding response body: %w", err)
+		return LocationDetailsResp{}, fmt.Errorf("error decoding response body: %w\n", err)
 	}
 
 	// Add response to cache
 	val, err := json.Marshal(locationDetails)
 	if err != nil{
-		return locationDetails, fmt.Errorf("error marshalling response into cache: %w", err)
+		return locationDetails, fmt.Errorf("error marshalling response into cache: %w\n", err)
 	}
 	c.cache.Add(url, val) 
 
