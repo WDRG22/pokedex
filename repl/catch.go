@@ -31,6 +31,7 @@ func Catch (cfg *Config, args []string) error {
 	}
 	
 	fmt.Printf("%s was caught!\n", pokemon.Name)
+	fmt.Printf("you can now inspect it with the 'inspect' command\n")
 	cfg.Collection.Add(pokemon)
 	return nil
 }
