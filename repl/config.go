@@ -1,17 +1,23 @@
 package repl
 
-import "github.com/wdrg22/pokedex/internal/pokeapi"
+import (
+	"github.com/wdrg22/pokedex/internal/pokeapi"
+	"github.com/wdrg22/pokedex/internal/pokedex"
+)
 
 type Config struct {
-        PokeClient  *pokeapi.Client
-        NextURL *string
-        PrevURL *string
+        PokeClient  	*pokeapi.Client
+	Collection	*pokedex.Collection
+        NextURL 	*string
+        PrevURL 	*string
 }
 
-func InitConfig(httpClient *pokeapi.Client, next string, prev string) *Config {
+
+func InitConfig(httpClient *pokeapi.Client, collection *pokedex.Collection, next string, prev string) *Config {
 	return &Config{
-		PokeClient: httpClient,
-		NextURL: &next,
-		PrevURL: &prev,
+		PokeClient: 	httpClient,
+		Collection:	collection,
+		NextURL: 	&next,
+		PrevURL: 	&prev,
 	}
 }
